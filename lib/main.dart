@@ -1,16 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:traineeflutter/screens/public/Auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:fluttermanager/screens/public.dart';
+import 'package:fluttermanager/services/userService.dart';
 
-void main() => runApp(const MyApp());
+void main() {
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  Firebase.initializeApp();
+
+  runApp(MyApp());
+
+}
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  UserService _userService = UserService();
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return  MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: AuthScreen(),
+      title: 'ManageApp',
+      home: StreamBuilder(
+        stream: _userService.user,
+          builder: (context, snapshot) {
+          print(snapshot.connectionState);
+
+          return Center(
+            child: Text('Loading...'),
+          );
+
+      }),
     );
   }
   
