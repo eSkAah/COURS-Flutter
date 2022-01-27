@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttermanager/screens/dashboard/Home.dart';
 import 'package:fluttermanager/screens/public.dart';
 import 'package:fluttermanager/services/userService.dart';
 
@@ -17,7 +16,9 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  UserService _userService = UserService();
+  final UserService _userService = UserService();
+
+  MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +30,10 @@ class MyApp extends StatelessWidget {
         builder: (context, snapshot) {
 
           if(snapshot.connectionState == ConnectionState.active){
+            // ignore: avoid_print
             print(snapshot.hasData);
 
-            return HomeScreen();
+            return const PublicScreen();
           }
 
           return const SafeArea(

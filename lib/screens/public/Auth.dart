@@ -20,46 +20,34 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.orange[500],
         body: Center(
           child:SingleChildScrollView(
             padding: const EdgeInsets.symmetric(
                 horizontal: 30),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 RichText(
                   text: TextSpan(
-                    text: 'Manage your \n'.toUpperCase(),
+                    text: 'IS IT TIME \n'.toUpperCase(),
                     style:  const TextStyle(
-                        color:Colors.black87,
+                        color:Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 40.0
                     ),
                     children: [
                       TextSpan(
-                          text: 'business\n'.toUpperCase(),
+                          text: 'TO TRAVEL ?\n'.toUpperCase(),
                           style: const TextStyle(
-                            color: Colors.green,
+                            color: Colors.deepOrange,
                             fontStyle: FontStyle.italic,
                             fontWeight: FontWeight.bold,
                           )
                       ),
-                      TextSpan(
-                        text: 'in a \n'.toUpperCase(),
-                        style: const TextStyle(
-                          color: Colors.black87,
-                        ),
-                      ),
-                      TextSpan(
-                          text: 'Different way\n\n'.toUpperCase(),
-                          style: const TextStyle(
-                            color: Colors.black87,
-                            fontWeight: FontWeight.bold,
-                          )
-                      ),
                       const TextSpan(
-                          text: 'Login to continue...\n',
+                          text: 'Login to know...\n',
                           style: TextStyle(
                               fontSize: 15.0,
                               fontStyle: FontStyle.italic,
@@ -74,7 +62,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   child:Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const Text('Enter your email address.'),
+                      const Text('Enter your email address.', style: TextStyle(color: Colors.white),),
                       TextFormField(
                         validator: (value) => value!.isEmpty || !emailRegex.hasMatch(value) ? 'Wrong email format.' : null,
                         onChanged: (value) => setState(() => _email = value),
@@ -89,7 +77,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(0.0),
                               borderSide: const BorderSide(
-                                  color: Colors.grey
+                                  color: Colors.white
                               )
                           )
                       ),),
@@ -98,17 +86,17 @@ class _AuthScreenState extends State<AuthScreen> {
                         height: 20.0,
                       ),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           ElevatedButton(
                             onPressed: !emailRegex.hasMatch(_email)
                                 ? null
                                 : () {
                               if(_formKey.currentState!.validate()) {
-                                print(_email);
                                 widget.nextStep(1, _email);
                               }
                             },
-                            child: const Text('VALIDATE'),
+                            child: const Text('CONNECT'),
                           ),
                         ],
                       ),

@@ -1,5 +1,6 @@
 class Temps {
 
+
   var main;
   var description;
   var icon;
@@ -12,15 +13,15 @@ class Temps {
   Temps(Map map){
     List weather = map['weather'];
     Map weatherMap = weather.first;
-    this.main = weatherMap['main'];
-    this.description = weatherMap['description'];
-    this.icon = weatherMap['icon'];
+    main = weatherMap['main'];
+    description = weatherMap['description'];
+    icon = weatherMap['icon'];
     Map mainMap = map['main'];
-    this.temp = mainMap['temp'];
-    this.pressure = mainMap['pressure'];
-    this.humidity = mainMap['humidity'];
-    this.min = mainMap['temp_min'];
-    this.max = mainMap['temp_max'];
+    temp = mainMap['temp'];
+    pressure = mainMap['pressure'];
+    humidity = mainMap['humidity'];
+    min = mainMap['temp_min'];
+    max = mainMap['temp_max'];
   }
 
 }

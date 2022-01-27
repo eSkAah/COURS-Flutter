@@ -44,7 +44,7 @@ class _TermScreenState extends State<TermScreen> {
             style: TextStyle(
                 color: Colors.black),),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             color: Colors.black,
             onPressed: () => widget.nextStep(0),
           )
@@ -74,12 +74,13 @@ class _TermScreenState extends State<TermScreen> {
               ),
               ElevatedButton(
                 onPressed: !_terms ? null : () {
-                  print('accept');
                   widget.nextStep(2);
                 },
                 child: const Text('Read & Accepted',
                   style: TextStyle(
-                    color: Colors.white),))
+                    color: Colors.white),
+                )
+              )
             ],
           ),
         )

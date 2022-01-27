@@ -15,7 +15,7 @@ class PublicScreen extends StatefulWidget {
 }
 
 class _PublicScreenState extends State<PublicScreen> {
-  CommonService _commonService = CommonService();
+  final CommonService _commonService = CommonService();
   final UserService _userService = UserService();
 
   final List<Widget> _widgets = [];
@@ -42,6 +42,7 @@ class _PublicScreenState extends State<PublicScreen> {
         }
     );
 
+
     PasswordScreen passwordScreen = PasswordScreen(nextStep: (index, value) async {
 
       UserModel connectedUserModel = await _userService.auth(UserModel(
@@ -50,11 +51,16 @@ class _PublicScreenState extends State<PublicScreen> {
       );
 
       setState(() {
+        if (index != null){
           _selectedIndex = index;
+        }
+
+        if(connectedUserModel != null){
           Navigator.push(
             context, MaterialPageRoute(builder: (context) => const HomeScreen(),
             ),
           );
+        }
       });
     },
     );

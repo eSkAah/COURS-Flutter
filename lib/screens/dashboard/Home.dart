@@ -1,6 +1,11 @@
 
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttermanager/screens/public.dart';
+import 'package:fluttermanager/services/userService.dart';
 import 'package:location/location.dart';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,12 +24,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  UserService _userService = UserService();
 
   /*GLOBAL VAR*/
   String key = "city";
   List<String> cities = [];
+  // ignore: prefer_typing_uninitialized_variables
   var choosenCity;
-  late Temps temperature;
+  Temps? temperature;
   String convertedCoordCity = "";
   GeoCode geoCode = GeoCode();
 
@@ -34,14 +41,15 @@ class _HomeScreenState extends State<HomeScreen> {
   late Stream<LocationData> stream;
   
   /*ASSETS VAR*/
-  AssetImage sun = AssetImage("assets/d1.jpg");
-  AssetImage rain = AssetImage("assets/d2.jpg");
-  AssetImage night = AssetImage("assets/n.jpg");
+  AssetImage sun = const AssetImage("assets/d1.jpg");
+  AssetImage rain = const AssetImage("assets/d2.jpg");
+  AssetImage night = const AssetImage("assets/n.jpg");
 
 
 /* Obtenir la location du telephone au démarrage */
   getInitialLocation() async {
     try{
+      print('TOOTOOOOOOOOOOOOOOOOOOOOOOOOOOOOO');
       locationData = await location.getLocation();
       print("Nouvelle position: ${locationData.latitude} / ${locationData.longitude}");
       locationToString();
@@ -62,32 +70,27 @@ class _HomeScreenState extends State<HomeScreen> {
       convertedCoordCity = convertedCity.city!;
     });
 
+    weatherApi();
   }
 
 /* Zone d'appel API */
   weatherApi() async {
     double? latitude = locationData.latitude;
     double? longitude = locationData.longitude;
-    String city;
 
-    if(choosenCity != null){
-      city = choosenCity;
+    try {
+      Coordinates coordinates = await geoCode.forwardGeocoding(
+          address: choosenCity);
 
-      try {
-        Coordinates coordinates = await geoCode.forwardGeocoding(
-            address: choosenCity);
+      print("Latitude: ${coordinates.latitude}");
+      print("Longitude: ${coordinates.longitude}");
 
-        print("Latitude: ${coordinates.latitude}");
-        print("Longitude: ${coordinates.longitude}");
+      latitude = coordinates.latitude;
+      longitude = coordinates.longitude;
 
-        latitude = coordinates.latitude;
-        longitude = coordinates.longitude;
-
-      } catch (e) {
-        print(e);
-      }
+    } catch (e) {
+      print(e);
     }
-
 
     const key = "b30c2e6abe71d24e67bcaca91b3046c7";
     String lang = Localizations.localeOf(context).languageCode;
@@ -100,14 +103,13 @@ class _HomeScreenState extends State<HomeScreen> {
       Map map = jsonDecode(response.body);
       setState(() {
         temperature = Temps(map);
-        print(temperature.description);
-        print(temperature.humidity);
-        print(temperature.temp);
+        print(temperature?.description);
+        print(temperature?.humidity);
+        print(temperature?.temp);
       });
     }
 
   }
-
 
   /*BASE INIT*/
   @override
@@ -130,7 +132,12 @@ class _HomeScreenState extends State<HomeScreen> {
           Padding(
             padding: const EdgeInsets.only(right: 30.0),
             child: GestureDetector(
-              onTap: () {},
+              onTap: () async {
+                await _userService.logout();
+                Navigator.pushAndRemoveUntil(context,
+                    MaterialPageRoute(builder: (context) => const PublicScreen()),
+                        (route) => false);
+              },
               child: const Icon(Icons.logout, size: 30.0,),
             )
           )
@@ -204,21 +211,21 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               styleText((choosenCity == null) ? convertedCoordCity :choosenCity, fontSize: 40.0, ),
-              Text("${temperature.description.toUpperCase()}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0, color: Colors.white),),
+              Text("${temperature?.description.toUpperCase()}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0, color: Colors.white),),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Image(image: getLocalIcon()),
-                  styleText("${temperature.temp.toInt()} °C", fontSize: 75.0),
+                  styleText("${temperature?.temp.toInt()} °C", fontSize: 75.0),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  extra("${temperature.min.toInt()}°C", Flutterweather.down),
-                  extra("${temperature.max.toInt()}°C", Flutterweather.up),
-                  extra("${temperature.pressure.toInt()} Pa", Flutterweather.temperatire),
-                  extra("${temperature.humidity.toInt()}%", Flutterweather.rain)
+                  extra("${temperature?.min.toInt()}°C", Flutterweather.down),
+                  extra("${temperature?.max.toInt()}°C", Flutterweather.up),
+                  extra("${temperature?.pressure.toInt()} Pa", Flutterweather.temperatire),
+                  extra("${temperature?.humidity.toInt()}%", Flutterweather.rain)
                 ],
               )
             ],
@@ -240,9 +247,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   /* Style pour texte*/
   Text styleText(String data,
-      {color:Colors.white,
-        fontSize : 19.0,
-        textAlign: TextAlign.center}){
+      {color = Colors.white,
+        fontSize = 19.0,
+        textAlign = TextAlign.center}){
     return Text(
       data,
       textAlign: textAlign,
@@ -260,16 +267,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }*/
 
   /* Ajout d'une ville dans le Drager*/
-  Future<Null> addCity() async {
+  Future<void> addCity() async {
     return showDialog(
       barrierDismissible: true,
       builder: (BuildContext buildContext){
         return SimpleDialog(
-          contentPadding: EdgeInsets.all(20.0),
+          contentPadding: const EdgeInsets.all(20.0),
           title: styleText("Ajouter une ville", fontSize: 22.0, color: Colors.blueAccent),
           children: <Widget>[
             TextField(
-              decoration: InputDecoration(labelText: "Ville : "),
+              decoration: const InputDecoration(labelText: "Ville : "),
               onSubmitted: (String city) {
                 add(city);
                 Navigator.pop(buildContext);
@@ -328,11 +335,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   /* Adaptation du background en fonction de l'icone recu par l'API*/
   AssetImage getBackground() {
-    if(temperature.icon.contains('n')){
+    if(temperature?.icon.contains('n')){
       return night;
-    }else if(temperature.icon.contains('01') ||
-              temperature.icon.contains('02') ||
-              temperature.icon.contains('04'))
+    }else if(temperature?.icon.contains('01') ||
+              temperature?.icon.contains('02') ||
+              temperature?.icon.contains('04'))
     {
       return sun;
     }else{
@@ -341,7 +348,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   AssetImage getLocalIcon(){
-    String icon = temperature.icon.replaceAll('d', '').replaceAll('n','');
+    String icon = temperature?.icon.replaceAll('d', '').replaceAll('n','');
     return AssetImage("assets/$icon.png");
   }
 

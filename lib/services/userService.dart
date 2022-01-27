@@ -4,7 +4,9 @@ import 'package:fluttermanager/models/userModel.dart';
 
 
 enum StateRegistration {
+  // ignore: constant_identifier_names
   COMPLETE,
+  // ignore: constant_identifier_names
   IN_PROGRESS,
 }
 
@@ -23,7 +25,6 @@ class UserService {
     //Dans le UserCredential on récupère un Objet User avec le UID, Delete et d'autres methods
     UserCredential userCredential;
     try {
-      print(userModel.toJson());
       userCredential = await _auth.signInWithEmailAndPassword(
           email: userModel.email,
           password: userModel.password);

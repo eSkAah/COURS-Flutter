@@ -19,17 +19,18 @@ class _PasswordScreenState extends State<PasswordScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.orange[500],
 
         appBar: AppBar(
         titleSpacing: 0.0,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: Colors.orange[500],
         elevation: 0.0,
         title: const Text('',
           style: TextStyle(
-              color: Colors.black),),
+              color: Colors.white),),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          color: Colors.black,
+          color: Colors.white,
           onPressed: () => widget.nextStep(0, ''),
         )
         ),
@@ -45,7 +46,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
 
                 Text('Password'.toUpperCase(),
                   style: const TextStyle(
-                      fontSize: 30.0),
+                      fontSize: 30.0,color: Colors.white, fontWeight: FontWeight.bold),
                 ),
 
                 const SizedBox(
@@ -57,7 +58,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const Text('Enter your password.'),
+                      const Text('Enter your password.', style: TextStyle(color: Colors.white),),
                       TextFormField(
                         onChanged: (value) => setState(() => _password = value),
                         validator: (value) => value!.length < 6 ? 'Password is too short' : null,

@@ -21,18 +21,6 @@ class CommonService {
   }
 
 
-  Future<void> get clients async {
-    
-    var documentReference = FirebaseFirestore.instance.collection('clients')
-      .get()
-      .then((QuerySnapshot querySnapshot) {
-        for (var element in querySnapshot.docs) {
-          print(element['name']);
-        }
-      }
-    );
-
-  }
 
 }
 
