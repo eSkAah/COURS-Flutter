@@ -16,8 +16,6 @@ class _AuthScreenState extends State<AuthScreen> {
   final RegExp emailRegex = RegExp(r"[a-z0-9\._-]+@[a-z0-9\._-]+\.[a-z]+");
   String _email = "";
 
-
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(

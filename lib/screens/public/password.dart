@@ -30,7 +30,8 @@ class _PasswordScreenState extends State<PasswordScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           color: Colors.black,
-          onPressed: () => widget.nextStep(0, ""),)
+          onPressed: () => widget.nextStep(0, ''),
+        )
         ),
 
         body: Center(

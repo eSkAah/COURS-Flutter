@@ -4,6 +4,7 @@ import 'package:fluttermanager/screens/dashboard/Home.dart';
 import 'package:fluttermanager/screens/public/Auth.dart';
 import 'package:fluttermanager/screens/public/Term.dart';
 import 'package:fluttermanager/screens/public/password.dart';
+import 'package:fluttermanager/services/CommonService.dart';
 import 'package:fluttermanager/services/userService.dart';
 
 class PublicScreen extends StatefulWidget {
@@ -14,6 +15,7 @@ class PublicScreen extends StatefulWidget {
 }
 
 class _PublicScreenState extends State<PublicScreen> {
+  CommonService _commonService = CommonService();
   final UserService _userService = UserService();
 
   final List<Widget> _widgets = [];
@@ -24,34 +26,53 @@ class _PublicScreenState extends State<PublicScreen> {
   void initState() {
     super.initState();
 
-    _widgets.addAll([
-      AuthScreen(nextStep: (index, value) => setState(() {
-        _selectedIndex = index;
-        _email = value;
-      })),
-      TermScreen(nextStep: (index) => setState(() => _selectedIndex = index)),
-      PasswordScreen(nextStep: (index, value) => setState(() {
-        if (index != "") {
-          _selectedIndex = index;
-        }
-        if (value != "") {
-          _userService.auth(UserModel(email: _email, password: value, uid: ''))
-            .then((value) {
-              if(value.uid != null) {
-                //2eme possibilité de navigation avec Navigator
-                Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
-              }
+
+    AuthScreen authScreen = AuthScreen(
+        nextStep: (index, value) async {
+          StateRegistration stateRegistration = await _userService.mailinglist(value);
+
+          setState(() {
+            _selectedIndex = index;
+            _email = value;
+
+            if(stateRegistration == StateRegistration.COMPLETE){
+              _selectedIndex = _widgets.length -1;
             }
-          );
+          });
         }
-      })),
-    ]);
+    );
+
+    PasswordScreen passwordScreen = PasswordScreen(nextStep: (index, value) async {
+
+      UserModel connectedUserModel = await _userService.auth(UserModel(
+          email: _email,
+          password: value, uid: ''),
+      );
+
+      setState(() {
+          _selectedIndex = index;
+          Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const HomeScreen(),
+            ),
+          );
+      });
+    },
+    );
+
+    _commonService.terms.then((terms) => setState(() => _widgets.addAll([
+        authScreen,
+        TermScreen(
+            terms: terms,
+            nextStep: (index) => setState(() => _selectedIndex = index)),
+        passwordScreen,
+      ]))
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: _widgets.elementAt(_selectedIndex),
+      child: _widgets.isEmpty ? const SafeArea(child: Scaffold(body: Center(child: Text('Loading...'),),)) : _widgets.elementAt(_selectedIndex),
     );
   }
 }

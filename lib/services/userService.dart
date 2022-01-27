@@ -1,10 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttermanager/models/userModel.dart';
 
 
+enum StateRegistration {
+  COMPLETE,
+  IN_PROGRESS,
+}
+
 class UserService {
   //Method que l'on peut utiliser comme une Promise et utiliser mode ASYNC de NodeJS
+
    final FirebaseAuth _auth = FirebaseAuth.instance;
+   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
    Stream<UserModel> get user {
      return _auth.authStateChanges().asyncMap( (user) => UserModel(uid: user!.uid, email: user.email!));
@@ -14,22 +22,56 @@ class UserService {
 
     //Dans le UserCredential on récupère un Objet User avec le UID, Delete et d'autres methods
     UserCredential userCredential;
-
-    //Utilisation d'un try&catch si l'user n'est pas enregistrer on l'inscris, sinon on le log.
-    //Evite la vérification de doublon en base de données.
     try {
       print(userModel.toJson());
       userCredential = await _auth.signInWithEmailAndPassword(
           email: userModel.email,
           password: userModel.password);
     }catch(e){
-      userCredential = await _auth.createUserWithEmailAndPassword(email: userModel.email, password: userModel.password);
+      userCredential = await _auth.createUserWithEmailAndPassword(
+          email: userModel.email,
+          password: userModel.password);
+
+      await mailinglist(userModel.email, stateRegistration: StateRegistration.COMPLETE);
     }
 
     userModel.setUid = userCredential.user?.uid;
 
     return userModel;
 
+  }
+
+  Future<void> logout() async {
+     await _auth.signOut();
+  }
+
+
+  Future<StateRegistration> mailinglist(
+      String email,
+      {StateRegistration ?stateRegistration,}) async {
+
+     DocumentReference documentReference = _firebaseFirestore.collection('mailinglist').doc(email);
+     DocumentSnapshot documentSnapshot = await documentReference.get();
+
+     if(stateRegistration != null) {
+       await _firebaseFirestore.collection('mailinglist').doc(email).set({
+         'state': stateRegistration.toString(),
+       });
+       return stateRegistration;
+     }
+
+     if(documentSnapshot.exists) {
+       String state = documentSnapshot.get('state');
+
+       return StateRegistration.values.firstWhere((element) => element.toString() == state);
+
+     }
+
+       await documentReference.set({'state': StateRegistration.IN_PROGRESS.toString()});
+
+       return StateRegistration.IN_PROGRESS;
+
 
   }
+
 }
