@@ -71,7 +71,7 @@ flutter:
   fonts:
     - family: Flutterweather
       fonts:
-        - asset: flutter-icons/fonts/Flutterweather.ttf
+        - asset: flutter-icons/fonts/MyFlutterApp.ttf
 
   # To add assets to your application, add an assets section, like this:
   assets:

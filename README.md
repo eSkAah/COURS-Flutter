@@ -1,4 +1,7 @@
-# Flutter Weather 
+# Flutter Weather  Allan BREUIL
+
+ATTENTION : NECESSAITE DE REDEMARRER L'APPLICATION A CAUSE DE L'API SI CE N'EST PAS REFRESH
+API PAYANTE
 
 Geolocator is deprecated, If you want to force the application you can use
 the following command : ```flutter run --no-sound-null-safety```

@@ -11,7 +11,7 @@ import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'temps.dart';
-import 'package:fluttermanager/flutterweather_icons.dart';
+import 'package:fluttermanager/my_flutter_app_icons.dart';
 import 'package:geocode/geocode.dart';
 
 
@@ -222,10 +222,10 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  extra("${temperature?.min.toInt()}°C", Flutterweather.down),
-                  extra("${temperature?.max.toInt()}°C", Flutterweather.up),
-                  extra("${temperature?.pressure.toInt()} Pa", Flutterweather.temperatire),
-                  extra("${temperature?.humidity.toInt()}%", Flutterweather.rain)
+                  extra("${temperature?.min.toInt()}°C", MyFlutterApp.arrow_downward),
+                  extra("${temperature?.max.toInt()}°C", MyFlutterApp.arrow_upward),
+                  extra("${temperature?.pressure.toInt()} Pa", MyFlutterApp.temperatire),
+                  extra("${temperature?.humidity.toInt()}%", MyFlutterApp.droplet)
                 ],
               )
             ],
