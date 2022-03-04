@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "115535824819",
+    "project_id": "fluttermanager-db0f3",
+    "storage_bucket": "fluttermanager-db0f3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:115535824819:android:0237359c704cfa1bfa2dc6",
+        "android_client_info": {
+          "package_name": "com.exemple.fluttermanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "115535824819-oed99n2b59cfa1i07qqa4p4fuvu5kvdu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7WGikLbZQ4PgHeVKXkS4wPIB0ck_AhjQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "115535824819-oed99n2b59cfa1i07qqa4p4fuvu5kvdu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
